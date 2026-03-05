@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Template principal du navigateur de menus -->
+    <t t-name="is_top_menu.MenuNavigator" owl="1">
+        <div class="o_menu_navigator">
+            <t t-if="state.isReady">
+                <!-- Header avec recherche -->
+                <div class="o_menu_navigator__header">
+                    <h1 class="o_menu_navigator__title">
+                        <i class="fa fa-sitemap me-2"/>
+                        <t t-esc="appName"/>
+                    </h1>
+                    
+                    <!-- Barre de recherche -->
+                    <div class="o_menu_navigator__search">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Rechercher un menu..." 
+                            t-model="state.searchTerm"
+                            t-on-input="onSearchInput"/>
+                    </div>
+                </div>
+                
+                <!-- Grille de menus -->
+                <div class="o_menu_navigator__grid">
+                <t t-if="menuSections.length">
+                    <t t-foreach="menuSections" t-as="section" t-key="section.id">
+                        <div class="o_menu_navigator__section">
+                            <!-- Titre de la section -->
+                            <div class="o_menu_navigator__section_title">
+                                <i class="fa fa-folder-open me-2"/>
+                                <t t-esc="section.name"/>
+                            </div>
+                            
+                            <!-- Items de menu -->
+                            <t t-if="section.children.length">
+                                <t t-call="is_top_menu.MenuItems">
+                                   <t t-set="items" t-value="section.children"/>
+                                    <t t-set="level" t-value="0"/>
+                                </t>
+                            </t>
+                            <t t-elif="section.hasAction">
+                                <!-- Si pas de sous-menus mais une action, afficher le lien direct -->
+                                <ul class="o_menu_navigator__items">
+                                    <li class="o_menu_navigator__item">
+                                        <a 
+                                            t-att-href="getMenuItemHref(section)"
+                                            class="o_menu_navigator__link"
+                                            t-att-data-menu-id="section.id"
+                                            t-att-data-action-id="section.actionID"
+                                            t-on-click.prevent="onMenuItemClick">
+                                            <i class="fa fa-angle-right me-2"/>
+                                            <t t-esc="section.name"/>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </t>
+                            <t t-else="">
+                                <div class="text-muted fst-italic p-2">Aucun sous-menu</div>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+                <t t-else="">
+                    <div class="o_menu_navigator__no_results">
+                        <i class="fa fa-search fa-3x mb-3"/>
+                        <p>Aucun menu correspondant à votre recherche</p>
+                    </div>
+                </t>
+            </div>
+            </t>
+            <t t-else="">
+                <!-- Chargement en cours -->
+                <div class="text-center p-5">
+                    <i class="fa fa-spinner fa-spin fa-3x text-muted"/>
+                    <p class="mt-3 text-muted">Chargement...</p>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- Template récursif pour les items de menu -->
+    <t t-name="is_top_menu.MenuItems" owl="1">
+        <ul class="o_menu_navigator__items">
+            <t t-foreach="items" t-as="item" t-key="item.id">
+                <li class="o_menu_navigator__item">
+                    <a 
+                        t-att-href="getMenuItemHref(item)" 
+                        class="o_menu_navigator__link"
+                        t-att-data-menu-id="item.id"
+                        t-att-data-action-id="item.actionID"
+                        t-on-click.prevent="onMenuItemClick">
+                        <i class="fa fa-angle-right me-2"/>
+                        <t t-esc="item.name"/>
+                    </a>
+                    
+                    <!-- Sous-menus récursifs -->
+                    <t t-if="item.childrenTree and item.childrenTree.length">
+                        <t t-call="is_top_menu.MenuItems">
+                            <t t-set="items" t-value="item.childrenTree"/>
+                            <t t-set="level" t-value="level + 1"/>
+                        </t>
+                    </t>
+                </li>
+            </t>
+        </ul>
+    </t>
+
+</templates>

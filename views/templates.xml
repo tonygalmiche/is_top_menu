@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template pour le bouton dans la systray -->
+    <template id="TopMenuButton" name="Top Menu Button">
+        <li class="o_top_menu_systray">
+            <a href="#" class="o_top_menu_button" title="Navigation des menus">
+                <i class="fa fa-th"/>
+            </a>
+        </li>
+    </template>
+</odoo>
