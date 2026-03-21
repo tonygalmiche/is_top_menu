@@ -3,7 +3,10 @@
 .o_menu_navigator {
     padding: 1rem;
     background: #f8f9fa;
-    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .o_menu_navigator__header {
@@ -14,6 +17,7 @@
     padding-bottom: 0.75rem;
     border-bottom: 2px solid #e0e0e0;
     gap: 1rem;
+    flex-shrink: 0;
 }
 
 .o_menu_navigator__title {
@@ -51,7 +55,11 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 0.75rem;
     max-width: 1600px;
+    width: 100%;
     margin: 0 auto;
+    flex: 1;
+    overflow-y: auto;
+    align-items: start;
 }
 
 .o_menu_navigator__section {
